@@ -1,0 +1,989 @@
+/* Root Variables */
+:root {
+  --bg: #1e293b;
+  /* Dark slate gray */
+  --text: #f8f8f2;
+  /* Light gray */
+  --primary: #3b82f6;
+  /* Blue accent */
+  --primary-light: #60a5fa;
+  --secondary: #64748b;
+  /* Medium gray */
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  /* Added for breakeven */
+  --card-bg: #334155;
+  /* Darker card */
+  --sidebar-bg: #1a202c;
+  /* Even darker sidebar */
+  --blur: 8px;
+  --transition: 0.2s ease-in-out;
+  --icon-size: 1.2rem;
+
+  /* Dropdown specific variables */
+  --dropdown-bg: var(--card-bg);
+  /* Use card background for dropdown list */
+  --dropdown-text: var(--text);
+  /* Use text color for dropdown options */
+  --dropdown-hover-bg: var(--primary);
+  /* Highlight on hover */
+  --dropdown-hover-text: white;
+  /* Text color on hover */
+}
+
+[data-theme="light"] {
+  --bg: #f0f0f0;
+  --text: #333;
+  --primary: #3b82f6;
+  --primary-light: #60a5fa;
+  --secondary: #cbd5e1;
+  --card-bg: #fff;
+  --sidebar-bg: #e2e8f0;
+  --yellow: #f59e0b;
+
+  /* Dropdown specific variables - Light theme */
+  --dropdown-bg: var(--card-bg);
+  --dropdown-text: var(--text);
+  --dropdown-hover-bg: var(--primary);
+  --dropdown-hover-text: white;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  /* Base font */
+  /* Ensure Material Symbols Outlined is available globally or where needed */
+  /* The link tag in HTML should handle this, but this is a fallback reminder */
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: var(--sidebar-bg);
+  color: var(--text);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease-in-out;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsed .logo {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background var(--transition), color var(--transition), transform 0.1s ease-in-out;
+}
+
+.sidebar .nav-item:hover,
+.sidebar .nav-item.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--primary);
+  transform: translateX(2px);
+}
+
+.sidebar .nav-item span.icon {
+  margin-right: 0.8rem;
+  font-size: var(--icon-size);
+}
+
+.sidebar .nav-item span.text {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsed .nav-item span.text {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+}
+
+.sidebar .theme-toggle {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  /* Make the whole div clickable */
+}
+
+.sidebar .theme-toggle span.icon {
+  margin-right: 0.8rem;
+  font-size: var(--icon-size);
+}
+
+.sidebar .theme-toggle span.text {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsed .theme-toggle span.text {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+}
+
+.sidebar .collapse-btn {
+  background: transparent;
+  border: none;
+  color: var(--secondary);
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 1.5rem;
+  /* Increased size for better visibility */
+  opacity: 0.7;
+  transition: opacity var(--transition);
+  padding: 0.5rem;
+  /* Add some padding for touch/click area */
+  border-radius: 5px;
+  /* Optional: add a slight rounded border */
+}
+
+.sidebar .collapse-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+  /* Subtle background on hover */
+}
+
+/* Main Content */
+.content {
+  flex-grow: 1;
+  padding: 2rem;
+  margin-left: 270px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.content.collapsed {
+  margin-left: 80px;
+}
+
+/* Section Display */
+.section {
+  display: none;
+  /* Hide all sections by default */
+}
+
+.section.active {
+  display: block;
+  /* Show only the active section */
+}
+
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h2 span.icon {
+  font-size: 1.5rem;
+}
+
+/* Modern Form */
+.modern-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(var(--blur));
+}
+
+.modern-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-form label {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  opacity: 0.8;
+  display: flex;
+  /* For icon alignment within label */
+  align-items: center;
+  /* For icon alignment within label */
+  gap: 0.3rem;
+  /* Space between icon and text in label */
+}
+
+.modern-form label .icon {
+  font-size: 1rem;
+  /* Adjust icon size in labels */
+}
+
+
+.modern-form input,
+.modern-form textarea,
+.modern-form datalist
+
+/* Datalist itself isn't styled, but input using it is */
+  {
+  padding: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+  backdrop-filter: blur(var(--blur));
+  transition: border var(--transition);
+  font-family: inherit;
+  /* Ensure consistent font */
+}
+
+.modern-form input:focus,
+.modern-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-light);
+}
+
+/* Styled Selects */
+.modern-form select,
+.styled-select {
+  padding: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+  transition: border var(--transition);
+  appearance: none;
+  /* Remove default arrow */
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23f8f8f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  /* Adjust padding for arrow */
+  cursor: pointer;
+  font-family: inherit;
+  /* Ensure consistent font */
+  background-color: var(--dropdown-bg);
+  color: var(--dropdown-text);
+}
+
+.modern-form select option .material-symbols-outlined,
+.styled-select option .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  /* Explicitly set for icons in options */
+  font-size: 1em;
+  /* Adjust as needed relative to option text */
+  line-height: inherit;
+}
+
+
+.modern-form select:focus,
+.styled-select:focus {
+  outline: none;
+  border-color: var(--primary-light);
+}
+
+/* Light theme specific styles for styled selects */
+[data-theme="light"] .styled-select {
+  background-color: var(--dropdown-bg);
+  color: var(--dropdown-text);
+  border-color: #cbd5e1;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23333" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  /* Darker arrow for light theme */
+}
+
+/* Utility class for vertical alignment of icons in options */
+.vertical-align-middle {
+  vertical-align: middle;
+  margin-right: 0.4em;
+  /* Adjust spacing as needed */
+  font-size: 1.1em;
+  /* Slightly larger for visibility */
+}
+
+
+.modern-form input[type="file"] {
+  display: none;
+  /* Hide default file input */
+}
+
+.modern-form .file-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+  cursor: pointer;
+  transition: border var(--transition);
+  justify-content: center;
+  /* Center the content */
+}
+
+.modern-form .file-upload-wrapper:hover {
+  border-color: var(--primary-light);
+}
+
+.modern-form .file-upload-wrapper span.icon {
+  font-size: var(--icon-size);
+}
+
+.modern-form .file-upload-wrapper span.text {
+  opacity: 0.8;
+}
+
+/* Full width form group (e.g., notes) */
+.modern-form .form-group.full-width {
+  grid-column: 1 / -1;
+  /* Span across all columns */
+}
+
+/* Modern Button */
+.modern-button {
+  background: var(--primary);
+  color: white;
+  padding: 1rem 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.modern-button:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.modern-button span.icon {
+  font-size: var(--icon-size);
+}
+
+.modern-button.full-width {
+  grid-column: 1 / -1;
+}
+
+.modern-button.compact-button {
+  padding: 0.5rem 1rem;
+  /* Smaller padding */
+  font-size: 0.9rem;
+  /* Smaller font */
+}
+
+
+/* Stats Summary */
+.stats-summary {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(var(--blur));
+}
+
+.stats-summary .summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+
+.stats-summary h3,
+.stats-summary h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  /* Adjusted for header layout */
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stats-summary h4 {
+  margin-top: 1.5rem;
+  /* More space before sub-heading */
+  margin-bottom: 1rem;
+  font-size: 1.1em;
+  color: var(--primary-light);
+}
+
+
+.stats-summary p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+#totalPnL.positive,
+#propTotalPnL.positive {
+  color: var(--green);
+}
+
+#totalPnL.negative,
+#propTotalPnL.negative {
+  color: var(--red);
+}
+
+#totalPnL.zero,
+#propTotalPnL.zero {
+  color: var(--text);
+  /* Or some neutral color */
+}
+
+
+/* Trade List Controls (Filters and Sort) */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  /* Allow items to wrap on smaller screens */
+  gap: 1rem;
+  /* Space between filter/sort groups */
+  margin-bottom: 1.5rem;
+  color: var(--text);
+  align-items: flex-end;
+  /* Align items to the bottom */
+}
+
+.controls .filter-group,
+.controls .sort-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  /* Ensure minimum width for selects */
+}
+
+.controls label {
+  margin-bottom: 0.4rem;
+  /* Slightly less space than form groups */
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+}
+
+.controls .styled-select {
+  padding: 0.6rem;
+  /* Slightly less padding than form selects */
+}
+
+/* Trade Grid */
+.trade-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* Slightly wider cards for more info */
+  margin-top: 1rem;
+}
+
+.trade-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(var(--blur));
+  position: relative;
+  /* For delete button positioning */
+}
+
+.trade-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.trade-card.win {
+  border-left: 6px solid var(--green);
+}
+
+.trade-card.lose {
+  border-left: 6px solid var(--red);
+}
+
+.trade-card.breakeven {
+  border-left: 6px solid var(--yellow);
+}
+
+
+.trade-card h3 {
+  margin-top: 0;
+  color: var(--primary);
+  margin-bottom: 0.8rem;
+}
+
+.trade-card p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  display: flex;
+  /* For icon alignment in trade card details */
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.trade-card p .icon {
+  /* Ensure icons in p tags are styled consistently */
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.trade-card .image-group-header {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--primary-light);
+}
+
+.trade-card .image-group-header .icon {
+  font-size: 1.1rem;
+}
+
+
+.trade-card .images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  /* Reduced margin after header */
+  margin-bottom: 0.8rem;
+  /* Space after grid */
+}
+
+.trade-card .image-container {
+  width: 100%;
+  height: 100px;
+  /* Smaller height for multiple images */
+  overflow: hidden;
+  border-radius: 6px;
+  position: relative;
+  background-color: #4a5568;
+  /* Placeholder background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trade-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+  cursor: zoom-in;
+}
+
+.trade-card .image-container:hover img {
+  transform: scale(1.1);
+}
+
+.trade-card .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  cursor: zoom-in;
+}
+
+.trade-card .image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+.trade-card .image-overlay span {
+  font-size: 1.5rem;
+}
+
+.trade-card .action-buttons {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.3rem;
+  /* Space between buttons */
+}
+
+.trade-card .action-buttons button {
+  background: rgba(255, 255, 255, 0.1);
+  /* Subtle background */
+  color: var(--text);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  transition: background var(--transition), color var(--transition), opacity var(--transition);
+  padding: 0;
+  /* Remove default padding */
+}
+
+.trade-card .action-buttons button:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.trade-card .action-buttons .delete-btn {
+  color: var(--red);
+}
+
+.trade-card .action-buttons .delete-btn:hover {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.trade-card .action-buttons .edit-btn {
+  color: var(--primary);
+}
+
+.trade-card .action-buttons .edit-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  /* Use primary color with opacity */
+}
+
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  color: var(--text);
+}
+
+/* Modals */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  overflow-y: auto;
+  /* Add scroll for longer forms/content */
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 650px;
+  /* Increased max-width for edit form with more fields */
+  color: var(--text);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  /* Allow modal content to take up more width on smaller screens */
+  max-height: 90vh;
+  /* Limit height and make it scrollable */
+  overflow-y: auto;
+  /* Add scroll within modal content */
+}
+
+.modal .close {
+  float: right;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text);
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.modal .close:hover {
+  opacity: 1;
+}
+
+/* Image Modal */
+#imageModal {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+#imageModal .modal-content {
+  background: transparent;
+  box-shadow: none;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* Prevent image overflow */
+}
+
+#imageModal img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* Ensure the whole image is visible */
+}
+
+#imageModal .close {
+  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  opacity: 1;
+}
+
+/* Settings Modal Specific Styles */
+.settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.settings-options .modern-button {
+  width: 100%;
+  text-align: left;
+  /* Align text and icon to the left */
+  justify-content: flex-start;
+  /* Align content to the start */
+}
+
+/* Edit Trade Modal Specific Styles */
+#editTradeModal .modern-form {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  /* Adjusted columns for edit form */
+  padding: 0;
+  /* Remove padding from the form itself inside modal */
+  background: none;
+  /* Remove background from form inside modal */
+  box-shadow: none;
+  /* Remove shadow from form inside modal */
+  backdrop-filter: none;
+  /* Remove backdrop filter from form inside modal */
+  gap: 1rem;
+  /* Adjust gap for edit form */
+}
+
+#editTradeModal .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+#editTradeModal .modern-button.full-width {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+}
+
+.image-status {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+  word-break: break-all;
+  /* Prevent long text from overflowing */
+}
+
+/* Calculator Section Styles */
+#calculatorSection .calculator-form {
+  /* Inherits styles from .modern-form */
+}
+
+#calculatorSection .calculator-form .form-group {
+  /* Inherits styles */
+}
+
+#calculatorSection .results-area {
+  background: rgba(0, 0, 0, 0.2);
+  /* Slightly different background for results */
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#calculatorSection .results-area h3 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: var(--primary-light);
+  font-size: 1.2rem;
+}
+
+#calculatorSection .results-area p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+#calculatorSection .results-area .disclaimer {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 0.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    /* Add horizontal scroll if items overflow */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+  }
+
+  .sidebar.collapsed {
+    width: 100%;
+  }
+
+  .sidebar .logo,
+  .sidebar .theme-toggle,
+  .sidebar .collapse-btn {
+    flex-shrink: 0;
+    /* Prevent shrinking */
+  }
+
+  .sidebar .logo .text,
+  .sidebar .nav-item .text,
+  .sidebar .theme-toggle .text {
+    display: none;
+    /* Hide text on small screens */
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: center;
+    /* Center nav items */
+    margin: 0 1rem;
+    /* Add some space around nav */
+  }
+
+  .sidebar .nav-item {
+    padding: 0.5rem;
+    margin-bottom: 0;
+    justify-content: center;
+    /* Center icon */
+  }
+
+  .sidebar .nav-item span.icon {
+    margin-right: 0;
+    /* Remove margin */
+  }
+
+  .content {
+    margin-left: 0;
+    padding: 1rem;
+    margin-top: 60px;
+    /* Add space below the horizontal sidebar */
+  }
+
+  .content.collapsed {
+    margin-left: 0;
+  }
+
+  .modern-form {
+    grid-template-columns: 1fr;
+    /* Stack form groups */
+    padding: 1rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    /* Stack filters and sort */
+    align-items: stretch;
+  }
+
+  .controls .filter-group,
+  .controls .sort-group {
+    min-width: 100%;
+    /* Make selects full width */
+  }
+
+  .trade-grid {
+    grid-template-columns: 1fr;
+    /* Stack trade cards */
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 95%;
+    /* More width on small screens */
+  }
+
+  #editTradeModal .modern-form,
+  #calculatorSection .calculator-form {
+    /* Apply stacked layout to calculator form too */
+    grid-template-columns: 1fr;
+  }
+
+  .stats-summary .summary-header {
+    flex-direction: column;
+    /* Stack heading and button on small screens */
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
