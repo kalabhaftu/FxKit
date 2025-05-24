@@ -1,35 +1,24 @@
 /* Root Variables */
 :root {
   --bg: #1e293b;
-  /* Dark slate gray */
   --text: #f8f8f2;
-  /* Light gray */
   --primary: #3b82f6;
-  /* Blue accent */
   --primary-light: #60a5fa;
   --secondary: #64748b;
-  /* Medium gray */
   --green: #22c55e;
   --red: #ef4444;
   --yellow: #eab308;
-  /* Added for breakeven */
   --card-bg: #334155;
-  /* Darker card */
   --sidebar-bg: #1a202c;
-  /* Even darker sidebar */
   --blur: 8px;
   --transition: 0.2s ease-in-out;
   --icon-size: 1.2rem;
-
-  /* Dropdown specific variables */
-  --dropdown-bg: var(--card-bg);
-  /* Use card background for dropdown list */
+  --dropdown-bg: #475569;
   --dropdown-text: var(--text);
-  /* Use text color for dropdown options */
   --dropdown-hover-bg: var(--primary);
-  /* Highlight on hover */
   --dropdown-hover-text: white;
-  /* Text color on hover */
+  --input-bg: rgba(0, 0, 0, 0.2);
+  --input-border: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] {
@@ -41,21 +30,19 @@
   --card-bg: #fff;
   --sidebar-bg: #e2e8f0;
   --yellow: #f59e0b;
-
-  /* Dropdown specific variables - Light theme */
-  --dropdown-bg: var(--card-bg);
+  --dropdown-bg: #ffffff;
   --dropdown-text: var(--text);
   --dropdown-hover-bg: var(--primary);
   --dropdown-hover-text: white;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
 }
 
+/* Base Body Styles */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  /* Base font */
-  /* Ensure Material Symbols Outlined is available globally or where needed */
-  /* The link tag in HTML should handle this, but this is a fallback reminder */
   background: var(--bg);
   color: var(--text);
   transition: background var(--transition), color var(--transition);
@@ -63,7 +50,16 @@ body {
   min-height: 100vh;
 }
 
-/* Sidebar */
+/* Material Icons/Symbols Vertical Alignment */
+.material-icons,
+.material-symbols-outlined {
+  vertical-align: middle;
+  line-height: 1;
+  font-size: 1.2em;
+}
+
+
+/* Sidebar Styles */
 .sidebar {
   width: 250px;
   background: var(--sidebar-bg);
@@ -76,7 +72,7 @@ body {
   top: 0;
   left: 0;
   height: 100%;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: width 0.3s ease-in-out;
 }
@@ -153,7 +149,6 @@ body {
   align-items: center;
   display: flex;
   cursor: pointer;
-  /* Make the whole div clickable */
 }
 
 .sidebar .theme-toggle span.icon {
@@ -178,22 +173,18 @@ body {
   cursor: pointer;
   margin-left: auto;
   font-size: 1.5rem;
-  /* Increased size for better visibility */
   opacity: 0.7;
   transition: opacity var(--transition);
   padding: 0.5rem;
-  /* Add some padding for touch/click area */
   border-radius: 5px;
-  /* Optional: add a slight rounded border */
 }
 
 .sidebar .collapse-btn:hover {
   opacity: 1;
   background: rgba(255, 255, 255, 0.05);
-  /* Subtle background on hover */
 }
 
-/* Main Content */
+/* Main Content Styles */
 .content {
   flex-grow: 1;
   padding: 2rem;
@@ -205,17 +196,13 @@ body {
   margin-left: 80px;
 }
 
-/* Section Display */
 .section {
   display: none;
-  /* Hide all sections by default */
 }
 
 .section.active {
   display: block;
-  /* Show only the active section */
 }
-
 
 h2 {
   margin-bottom: 1.5rem;
@@ -229,7 +216,7 @@ h2 span.icon {
   font-size: 1.5rem;
 }
 
-/* Modern Form */
+/* Modern Form Styles */
 .modern-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -244,6 +231,7 @@ h2 span.icon {
 .modern-form .form-group {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .modern-form label {
@@ -251,34 +239,27 @@ h2 span.icon {
   color: var(--text);
   opacity: 0.8;
   display: flex;
-  /* For icon alignment within label */
   align-items: center;
-  /* For icon alignment within label */
   gap: 0.3rem;
-  /* Space between icon and text in label */
 }
 
 .modern-form label .icon {
   font-size: 1rem;
-  /* Adjust icon size in labels */
 }
-
 
 .modern-form input,
 .modern-form textarea,
-.modern-form datalist
-
-/* Datalist itself isn't styled, but input using it is */
-  {
+.modern-form datalist {
   padding: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--input-bg);
   color: var(--text);
   backdrop-filter: blur(var(--blur));
   transition: border var(--transition);
   font-family: inherit;
-  /* Ensure consistent font */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .modern-form input:focus,
@@ -287,104 +268,159 @@ h2 span.icon {
   border-color: var(--primary-light);
 }
 
-/* Styled Selects */
-.modern-form select,
-.styled-select {
-  padding: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  background-color: rgba(0, 0, 0, 0.2);
-  color: var(--text);
-  transition: border var(--transition);
-  appearance: none;
-  /* Remove default arrow */
-  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23f8f8f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 0.8rem center;
-  background-size: 1rem;
-  padding-right: 2.5rem;
-  /* Adjust padding for arrow */
-  cursor: pointer;
-  font-family: inherit;
-  /* Ensure consistent font */
-  background-color: var(--dropdown-bg);
-  color: var(--dropdown-text);
-}
-
-.modern-form select option .material-symbols-outlined,
-.styled-select option .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
-  /* Explicitly set for icons in options */
-  font-size: 1em;
-  /* Adjust as needed relative to option text */
-  line-height: inherit;
-}
-
-
-.modern-form select:focus,
-.styled-select:focus {
-  outline: none;
-  border-color: var(--primary-light);
-}
-
-/* Light theme specific styles for styled selects */
-[data-theme="light"] .styled-select {
-  background-color: var(--dropdown-bg);
-  color: var(--dropdown-text);
-  border-color: #cbd5e1;
-  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23333" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
-  /* Darker arrow for light theme */
-}
-
-/* Utility class for vertical alignment of icons in options */
-.vertical-align-middle {
-  vertical-align: middle;
-  margin-right: 0.4em;
-  /* Adjust spacing as needed */
-  font-size: 1.1em;
-  /* Slightly larger for visibility */
-}
-
-
-.modern-form input[type="file"] {
-  display: none;
-  /* Hide default file input */
-}
-
 .modern-form .file-upload-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.8rem;
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed var(--input-border);
   border-radius: 6px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--input-bg);
   color: var(--text);
   cursor: pointer;
   transition: border var(--transition);
   justify-content: center;
-  /* Center the content */
 }
 
 .modern-form .file-upload-wrapper:hover {
   border-color: var(--primary-light);
 }
 
-.modern-form .file-upload-wrapper span.icon {
-  font-size: var(--icon-size);
+.modern-form .form-group.full-width {
+  grid-column: 1 / -1;
 }
 
-.modern-form .file-upload-wrapper span.text {
+.modern-form input[type="file"] {
+  display: none;
+}
+
+/* Styled Selects (Standard) */
+.styled-select {
+  padding: 0.8rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background-color: var(--dropdown-bg);
+  /* updated to match bias dropdown */
+  color: var(--text);
+  transition: border var(--transition);
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23f8f8f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
+  /* match bias dropdown icon size */
+}
+
+[data-theme="light"] .styled-select {
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23333" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+}
+
+/* Optional hover effect similar to bias dropdown */
+.styled-select:hover {
+  border-color: var(--primary-light);
+}
+
+/* Focus border color consistency */
+.styled-select:focus {
+  outline: none;
+  border-color: var(--primary-light);
+}
+
+/* --- Custom Dropdown (Bias) Styles --- */
+.custom-select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.custom-select .selected-option {
+  padding: 0.8rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background-color: var(--dropdown-bg);
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border var(--transition);
+  box-sizing: border-box;
+  height: calc(0.8rem * 2 + 1.2em + 2px);
+  font-size: 1rem;
+  /* added this line */
+}
+
+
+.custom-select .selected-option:hover {
+  border-color: var(--primary-light);
+}
+
+.custom-select .selected-option span,
+.custom-select .selected-option .material-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.custom-select .selected-option .material-icons {
+  font-size: 1.2em;
   opacity: 0.8;
 }
 
-/* Full width form group (e.g., notes) */
-.modern-form .form-group.full-width {
-  grid-column: 1 / -1;
-  /* Span across all columns */
+.custom-select .selected-option .dropdown-arrow {
+  opacity: 1;
+  transition: transform 0.2s ease-in-out;
+  margin-left: auto;
 }
 
-/* Modern Button */
+.custom-select .options:not(.hidden)~.selected-option .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+
+.custom-select .options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--dropdown-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  z-index: 1100;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-select .options div {
+  padding: 0.8rem;
+  color: var(--dropdown-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background var(--transition);
+}
+
+.custom-select .options div:hover {
+  background: var(--dropdown-hover-bg);
+  color: var(--dropdown-hover-text);
+}
+
+/* This is the key: General .hidden class */
+.hidden {
+  display: none;
+}
+
+/* --- End Custom Dropdown Styles --- */
+
+
+/* Modern Button Styles */
 .modern-button {
   background: var(--primary);
   color: white;
@@ -416,13 +452,10 @@ h2 span.icon {
 
 .modern-button.compact-button {
   padding: 0.5rem 1rem;
-  /* Smaller padding */
   font-size: 0.9rem;
-  /* Smaller font */
 }
 
-
-/* Stats Summary */
+/* Stats Summary Styles */
 .stats-summary {
   background: var(--card-bg);
   padding: 1.5rem;
@@ -437,14 +470,13 @@ h2 span.icon {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
-
 
 .stats-summary h3,
 .stats-summary h4 {
   margin-top: 0;
   margin-bottom: 0;
-  /* Adjusted for header layout */
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -453,46 +485,45 @@ h2 span.icon {
 
 .stats-summary h4 {
   margin-top: 1.5rem;
-  /* More space before sub-heading */
   margin-bottom: 1rem;
   font-size: 1.1em;
   color: var(--primary-light);
 }
-
 
 .stats-summary p {
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
 
-#totalPnL.positive,
-#propTotalPnL.positive {
+#liveTotalPnL.positive,
+#propTotalPnL.positive,
+#backtestTotalPnL.positive,
+#demoTotalPnL.positive {
   color: var(--green);
 }
 
-#totalPnL.negative,
-#propTotalPnL.negative {
+#liveTotalPnL.negative,
+#propTotalPnL.negative,
+#backtestTotalPnL.negative,
+#demoTotalPnL.negative {
   color: var(--red);
 }
 
-#totalPnL.zero,
-#propTotalPnL.zero {
+#liveTotalPnL.zero,
+#propTotalPnL.zero,
+#backtestTotalPnL.zero,
+#demoTotalPnL.zero {
   color: var(--text);
-  /* Or some neutral color */
 }
 
-
-/* Trade List Controls (Filters and Sort) */
+/* Trade List Controls Styles */
 .controls {
   display: flex;
   flex-wrap: wrap;
-  /* Allow items to wrap on smaller screens */
   gap: 1rem;
-  /* Space between filter/sort groups */
   margin-bottom: 1.5rem;
   color: var(--text);
   align-items: flex-end;
-  /* Align items to the bottom */
 }
 
 .controls .filter-group,
@@ -500,12 +531,10 @@ h2 span.icon {
   display: flex;
   flex-direction: column;
   min-width: 150px;
-  /* Ensure minimum width for selects */
 }
 
 .controls label {
   margin-bottom: 0.4rem;
-  /* Slightly less space than form groups */
   opacity: 0.8;
   display: flex;
   align-items: center;
@@ -515,15 +544,13 @@ h2 span.icon {
 
 .controls .styled-select {
   padding: 0.6rem;
-  /* Slightly less padding than form selects */
 }
 
-/* Trade Grid */
+/* Trade Grid & Card Styles */
 .trade-grid {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  /* Slightly wider cards for more info */
   margin-top: 1rem;
 }
 
@@ -535,7 +562,6 @@ h2 span.icon {
   transition: transform var(--transition), box-shadow var(--transition);
   backdrop-filter: blur(var(--blur));
   position: relative;
-  /* For delete button positioning */
 }
 
 .trade-card:hover {
@@ -555,7 +581,6 @@ h2 span.icon {
   border-left: 6px solid var(--yellow);
 }
 
-
 .trade-card h3 {
   margin-top: 0;
   color: var(--primary);
@@ -566,15 +591,16 @@ h2 span.icon {
   margin-bottom: 0.5rem;
   line-height: 1.5;
   display: flex;
-  /* For icon alignment in trade card details */
   align-items: center;
   gap: 0.4rem;
 }
 
-.trade-card p .icon {
-  /* Ensure icons in p tags are styled consistently */
+.trade-card p .icon,
+.trade-card p .material-icons,
+.trade-card p .material-symbols-outlined {
   font-size: 1rem;
   opacity: 0.8;
+  vertical-align: middle;
 }
 
 .trade-card .image-group-header {
@@ -591,26 +617,21 @@ h2 span.icon {
   font-size: 1.1rem;
 }
 
-
 .trade-card .images-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 0.5rem;
   margin-top: 0.3rem;
-  /* Reduced margin after header */
   margin-bottom: 0.8rem;
-  /* Space after grid */
 }
 
 .trade-card .image-container {
   width: 100%;
   height: 100px;
-  /* Smaller height for multiple images */
   overflow: hidden;
   border-radius: 6px;
   position: relative;
   background-color: #4a5568;
-  /* Placeholder background */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -629,42 +650,16 @@ h2 span.icon {
   transform: scale(1.1);
 }
 
-.trade-card .image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: var(--text);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  cursor: zoom-in;
-}
-
-.trade-card .image-container:hover .image-overlay {
-  opacity: 1;
-}
-
-.trade-card .image-overlay span {
-  font-size: 1.5rem;
-}
-
 .trade-card .action-buttons {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   display: flex;
   gap: 0.3rem;
-  /* Space between buttons */
 }
 
 .trade-card .action-buttons button {
   background: rgba(255, 255, 255, 0.1);
-  /* Subtle background */
   color: var(--text);
   border: none;
   border-radius: 50%;
@@ -678,8 +673,12 @@ h2 span.icon {
   opacity: 0.7;
   transition: background var(--transition), color var(--transition), opacity var(--transition);
   padding: 0;
-  /* Remove default padding */
 }
+
+.trade-card .action-buttons button .material-symbols-outlined {
+  font-size: 1rem;
+}
+
 
 .trade-card .action-buttons button:hover {
   opacity: 1;
@@ -700,11 +699,9 @@ h2 span.icon {
 
 .trade-card .action-buttons .edit-btn:hover {
   background: rgba(59, 130, 246, 0.2);
-  /* Use primary color with opacity */
 }
 
-
-/* Footer */
+/* Footer Styles */
 footer {
   text-align: center;
   padding: 1.5rem;
@@ -713,7 +710,7 @@ footer {
   color: var(--text);
 }
 
-/* Modals */
+/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -726,7 +723,6 @@ footer {
   align-items: center;
   z-index: 2000;
   overflow-y: auto;
-  /* Add scroll for longer forms/content */
 }
 
 .modal-content {
@@ -734,15 +730,11 @@ footer {
   padding: 2rem;
   border-radius: 12px;
   max-width: 650px;
-  /* Increased max-width for edit form with more fields */
   color: var(--text);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   width: 90%;
-  /* Allow modal content to take up more width on smaller screens */
   max-height: 90vh;
-  /* Limit height and make it scrollable */
   overflow-y: auto;
-  /* Add scroll within modal content */
 }
 
 .modal .close {
@@ -758,7 +750,6 @@ footer {
   opacity: 1;
 }
 
-/* Image Modal */
 #imageModal {
   background: rgba(0, 0, 0, 0.9);
 }
@@ -772,14 +763,12 @@ footer {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  /* Prevent image overflow */
 }
 
 #imageModal img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  /* Ensure the whole image is visible */
 }
 
 #imageModal .close {
@@ -791,7 +780,6 @@ footer {
   opacity: 1;
 }
 
-/* Settings Modal Specific Styles */
 .settings-options {
   display: flex;
   flex-direction: column;
@@ -800,36 +788,16 @@ footer {
 }
 
 .settings-options .modern-button {
-  width: 100%;
-  text-align: left;
-  /* Align text and icon to the left */
   justify-content: flex-start;
-  /* Align content to the start */
 }
 
-/* Edit Trade Modal Specific Styles */
 #editTradeModal .modern-form {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  /* Adjusted columns for edit form */
   padding: 0;
-  /* Remove padding from the form itself inside modal */
   background: none;
-  /* Remove background from form inside modal */
   box-shadow: none;
-  /* Remove shadow from form inside modal */
   backdrop-filter: none;
-  /* Remove backdrop filter from form inside modal */
   gap: 1rem;
-  /* Adjust gap for edit form */
-}
-
-#editTradeModal .form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-#editTradeModal .modern-button.full-width {
-  grid-column: 1 / -1;
-  margin-top: 1rem;
 }
 
 .image-status {
@@ -837,24 +805,14 @@ footer {
   opacity: 0.9;
   margin-top: 0.5rem;
   word-break: break-all;
-  /* Prevent long text from overflowing */
 }
 
-/* Calculator Section Styles */
-#calculatorSection .calculator-form {
-  /* Inherits styles from .modern-form */
-}
-
-#calculatorSection .calculator-form .form-group {
-  /* Inherits styles */
-}
-
+/* Calculator Styles */
 #calculatorSection .results-area {
   background: rgba(0, 0, 0, 0.2);
-  /* Slightly different background for results */
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--input-border);
 }
 
 #calculatorSection .results-area h3 {
@@ -878,7 +836,7 @@ footer {
   gap: 0.5rem;
 }
 
-/* Responsive adjustments */
+/* Responsive Styles */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -890,9 +848,7 @@ footer {
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
-    /* Add horizontal scroll if items overflow */
     -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling on iOS */
   }
 
   .sidebar.collapsed {
@@ -903,42 +859,35 @@ footer {
   .sidebar .theme-toggle,
   .sidebar .collapse-btn {
     flex-shrink: 0;
-    /* Prevent shrinking */
   }
 
   .sidebar .logo .text,
   .sidebar .nav-item .text,
   .sidebar .theme-toggle .text {
     display: none;
-    /* Hide text on small screens */
   }
 
   .sidebar nav {
     flex-direction: row;
     flex-grow: 1;
     justify-content: center;
-    /* Center nav items */
     margin: 0 1rem;
-    /* Add some space around nav */
   }
 
   .sidebar .nav-item {
     padding: 0.5rem;
     margin-bottom: 0;
     justify-content: center;
-    /* Center icon */
   }
 
   .sidebar .nav-item span.icon {
     margin-right: 0;
-    /* Remove margin */
   }
 
   .content {
     margin-left: 0;
     padding: 1rem;
     margin-top: 60px;
-    /* Add space below the horizontal sidebar */
   }
 
   .content.collapsed {
@@ -947,42 +896,35 @@ footer {
 
   .modern-form {
     grid-template-columns: 1fr;
-    /* Stack form groups */
     padding: 1rem;
   }
 
   .controls {
     flex-direction: column;
-    /* Stack filters and sort */
     align-items: stretch;
   }
 
   .controls .filter-group,
   .controls .sort-group {
     min-width: 100%;
-    /* Make selects full width */
   }
 
   .trade-grid {
     grid-template-columns: 1fr;
-    /* Stack trade cards */
   }
 
   .modal-content {
     padding: 1.5rem;
     max-width: 95%;
-    /* More width on small screens */
   }
 
   #editTradeModal .modern-form,
   #calculatorSection .calculator-form {
-    /* Apply stacked layout to calculator form too */
     grid-template-columns: 1fr;
   }
 
   .stats-summary .summary-header {
     flex-direction: column;
-    /* Stack heading and button on small screens */
     align-items: flex-start;
     gap: 0.5rem;
   }

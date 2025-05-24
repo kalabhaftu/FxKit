@@ -9,6 +9,7 @@
     <script defer src="app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap"
         rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
@@ -55,9 +56,10 @@
                     <label for="accountType"><span class="material-symbols-outlined icon">account_balance</span>
                         Account:</label>
                     <select id="accountType" required class="styled-select">
-                        <option value="demo">Demo</option>
                         <option value="live">Live</option>
+                        <option value="demo">Demo</option>
                         <option value="propfirm">Prop Firm</option>
+                        <option value="backtest">Backtest</option>
                     </select>
                 </div>
                 <div class="form-group pair-dropdown">
@@ -83,15 +85,21 @@
                 </div>
                 <div class="form-group">
                     <label for="bias"><span class="material-symbols-outlined icon">explore</span> Bias:</label>
-                    <select id="bias" class="styled-select">
-                        <option value="">-- Select Bias --</option>
-                        <option value="bullish"><span
-                                class="material-symbols-outlined icon vertical-align-middle">trending_up</span> Bullish
-                        </option>
-                        <option value="bearish"><span
-                                class="material-symbols-outlined icon vertical-align-middle">trending_down</span>
-                            Bearish</option>
-                    </select>
+                    <div class="custom-select" id="biasCustomSelect">
+                        <input type="hidden" id="biasValue" name="bias">
+                        <div id="biasSelectedOption" class="selected-option" onclick="toggleDropdown('biasOptions')">
+                            <span>-- Select Bias --</span>
+                            <span class="material-icons dropdown-arrow">arrow_drop_down</span>
+                        </div>
+                        <div id="biasOptions" class="options hidden">
+                            <div onclick="selectOption('bias', 'bullish', 'trending_up', 'Bullish')">
+                                <span class="material-icons">trending_up</span> Bullish
+                            </div>
+                            <div onclick="selectOption('bias', 'bearish', 'trending_down', 'Bearish')">
+                                <span class="material-icons">trending_down</span> Bearish
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="session"><span class="material-symbols-outlined icon">schedule</span> Session:</label>
@@ -260,12 +268,14 @@
                     <button id="toggleSummaryViewBtn" class="modern-button compact-button">View Prop Stats</button>
                 </div>
 
-                <div id="generalStatsDiv">
-                    <p>Total Trades: <span id="totalTrades">0</span></p>
-                    <p>Win Rate: <span id="winRate">0%</span></p>
-                    <p>Total PnL: $<span id="totalPnL">0.00</span></p>
-                    <p>Wins: <span id="totalWins">0</span> | Losses: <span id="totalLosses">0</span></p>
-                    <p>Max Drawdown: $<span id="maxDrawdown">0.00</span></p>
+                <div id="liveStatsDiv">
+                    <h4>Live Account Summary</h4>
+                    <p>Total Live Trades: <span id="liveTotalTrades">0</span></p>
+                    <p>Live Win Rate: <span id="liveWinRate">0%</span></p>
+                    <p>Live Total PnL: $<span id="liveTotalPnL">0.00</span></p>
+                    <p>Live Wins: <span id="liveTotalWins">0</span> | Live Losses: <span id="liveTotalLosses">0</span>
+                    </p>
+                    <p>Live Max Drawdown: $<span id="liveMaxDrawdown">0.00</span></p>
                 </div>
 
                 <div id="propFirmStatsDiv" style="display:none;">
@@ -278,7 +288,28 @@
                     <p>Prop Current Balance: $<span id="propCurrentBalance">2500.00</span></p>
                     <p>Prop Max Drawdown: $<span id="propMaxDrawdown">0.00</span></p>
                 </div>
+
+                <div id="backtestStatsDiv" style="display:none;">
+                    <h4>Backtest Account Summary</h4>
+                    <p>Total Backtest Trades: <span id="backtestTotalTrades">0</span></p>
+                    <p>Backtest Win Rate: <span id="backtestWinRate">0%</span></p>
+                    <p>Backtest Total PnL: $<span id="backtestTotalPnL">0.00</span></p>
+                    <p>Backtest Wins: <span id="backtestTotalWins">0</span> | Backtest Losses: <span
+                            id="backtestTotalLosses">0</span></p>
+                    <p>Backtest Max Drawdown: $<span id="backtestMaxDrawdown">0.00</span></p>
+                </div>
+
+                <div id="demoStatsDiv" style="display:none;">
+                    <h4>Demo Account Summary</h4>
+                    <p>Total Demo Trades: <span id="demoTotalTrades">0</span></p>
+                    <p>Demo Win Rate: <span id="demoWinRate">0%</span></p>
+                    <p>Demo Total PnL: $<span id="demoTotalPnL">0.00</span></p>
+                    <p>Demo Wins: <span id="demoTotalWins">0</span> | Demo Losses: <span id="demoTotalLosses">0</span>
+                    </p>
+                    <p>Demo Max Drawdown: $<span id="demoMaxDrawdown">0.00</span></p>
+                </div>
             </div>
+
 
             <div class="controls">
                 <div class="filter-group">
@@ -303,9 +334,10 @@
                         Filter by Account:</label>
                     <select id="filterAccount" class="styled-select">
                         <option value="all">All Accounts</option>
-                        <option value="demo">Demo</option>
                         <option value="live">Live</option>
+                        <option value="demo">Demo</option>
                         <option value="propfirm">Prop Firm</option>
+                        <option value="backtest">Backtest</option>
                     </select>
                 </div>
                 <div class="sort-group">
@@ -429,9 +461,10 @@
                         <label for="editAccountType"><span class="material-symbols-outlined icon">account_balance</span>
                             Account:</label>
                         <select id="editAccountType" required class="styled-select">
-                            <option value="demo">Demo</option>
                             <option value="live">Live</option>
+                            <option value="demo">Demo</option>
                             <option value="propfirm">Prop Firm</option>
+                            <option value="backtest">Backtest</option>
                         </select>
                     </div>
                     <div class="form-group pair-dropdown">
@@ -457,15 +490,22 @@
                     </div>
                     <div class="form-group">
                         <label for="editBias"><span class="material-symbols-outlined icon">explore</span> Bias:</label>
-                        <select id="editBias" class="styled-select">
-                            <option value="">-- Select Bias --</option>
-                            <option value="bullish"><span
-                                    class="material-symbols-outlined icon vertical-align-middle">trending_up</span>
-                                Bullish</option>
-                            <option value="bearish"><span
-                                    class="material-symbols-outlined icon vertical-align-middle">trending_down</span>
-                                Bearish</option>
-                        </select>
+                        <div class="custom-select" id="editBiasCustomSelect">
+                            <input type="hidden" id="editBiasValue" name="editBias">
+                            <div id="editBiasSelectedOption" class="selected-option"
+                                onclick="toggleDropdown('editBiasOptions')">
+                                <span>-- Select Bias --</span>
+                                <span class="material-icons dropdown-arrow">arrow_drop_down</span>
+                            </div>
+                            <div id="editBiasOptions" class="options hidden">
+                                <div onclick="selectOption('editBias', 'bullish', 'trending_up', 'Bullish')">
+                                    <span class="material-icons">trending_up</span> Bullish
+                                </div>
+                                <div onclick="selectOption('editBias', 'bearish', 'trending_down', 'Bearish')">
+                                    <span class="material-icons">trending_down</span> Bearish
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="editSession"><span class="material-symbols-outlined icon">schedule</span>

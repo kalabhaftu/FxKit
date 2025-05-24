@@ -29,19 +29,18 @@ const exportDataBtn = document.getElementById('exportDataBtn');
 const importDataBtn = document.getElementById('importDataBtn');
 const importFileInput = document.getElementById('importFileInput');
 
-// Form fields (Add Trade)
-const biasSelect = document.getElementById('bias');
+// Form fields (Add Trade - Standard)
 const sessionSelect = document.getElementById('session');
 const tradeTypeSelect = document.getElementById('tradeType');
 const slPipsInput = document.getElementById('slPips');
 const riskPercentageInput = document.getElementById('riskPercentage');
-const modelInput = document.getElementById('modelInput'); // Changed from select
-const emotionalStateInput = document.getElementById('emotionalStateInput'); // Changed to input
+const modelInput = document.getElementById('modelInput');
+const emotionalStateInput = document.getElementById('emotionalStateInput');
 const lotSizeInput = document.getElementById('lotSize');
 const directionSelect = document.getElementById('direction');
 const durationInput = document.getElementById('duration');
 const accountTypeSelect = document.getElementById('accountType');
-
+const biasValueInput = document.getElementById('biasValue'); // Custom
 
 // Filtering
 const filterResultSelect = document.getElementById('filterResult');
@@ -49,18 +48,21 @@ const filterPairSelect = document.getElementById('filterPair');
 const filterAccountSelect = document.getElementById('filterAccount');
 const tradeListPairs = new Set();
 
-// Statistics
-const generalStatsDiv = document.getElementById('generalStatsDiv'); // Toggle target
-const totalTradesSpan = document.getElementById('totalTrades');
-const winRateSpan = document.getElementById('winRate');
-const totalPnLSpan = document.getElementById('totalPnL');
-const totalWinsSpan = document.getElementById('totalWins');
-const totalLossesSpan = document.getElementById('totalLosses');
-const maxDrawdownSpan = document.getElementById('maxDrawdown');
+// Statistics Divs
+const liveStatsDiv = document.getElementById('liveStatsDiv');
+const propFirmStatsDiv = document.getElementById('propFirmStatsDiv');
+const backtestStatsDiv = document.getElementById('backtestStatsDiv');
+const demoStatsDiv = document.getElementById('demoStatsDiv');
 
-// Prop Firm Statistics & Toggle Button
-const toggleSummaryViewBtn = document.getElementById('toggleSummaryViewBtn');
-const propFirmStatsDiv = document.getElementById('propFirmStatsDiv'); // Toggle target
+// Statistics Spans (Live)
+const liveTotalTradesSpan = document.getElementById('liveTotalTrades');
+const liveWinRateSpan = document.getElementById('liveWinRate');
+const liveTotalPnLSpan = document.getElementById('liveTotalPnL');
+const liveWinsSpan = document.getElementById('liveTotalWins');
+const liveLossesSpan = document.getElementById('liveTotalLosses');
+const liveMaxDrawdownSpan = document.getElementById('liveMaxDrawdown');
+
+// Statistics Spans (Prop Firm)
 const propTotalTradesSpan = document.getElementById('propTotalTrades');
 const propWinRateSpan = document.getElementById('propWinRate');
 const propTotalPnLSpan = document.getElementById('propTotalPnL');
@@ -69,6 +71,24 @@ const propTotalLossesSpan = document.getElementById('propTotalLosses');
 const propCurrentBalanceSpan = document.getElementById('propCurrentBalance');
 const propMaxDrawdownSpan = document.getElementById('propMaxDrawdown');
 
+// Statistics Spans (Backtest)
+const backtestTotalTradesSpan = document.getElementById('backtestTotalTrades');
+const backtestWinRateSpan = document.getElementById('backtestWinRate');
+const backtestTotalPnLSpan = document.getElementById('backtestTotalPnL');
+const backtestTotalWinsSpan = document.getElementById('backtestTotalWins');
+const backtestTotalLossesSpan = document.getElementById('backtestTotalLosses');
+const backtestMaxDrawdownSpan = document.getElementById('backtestMaxDrawdown');
+
+// Statistics Spans (Demo)
+const demoTotalTradesSpan = document.getElementById('demoTotalTrades');
+const demoWinRateSpan = document.getElementById('demoWinRate');
+const demoTotalPnLSpan = document.getElementById('demoTotalPnL');
+const demoWinsSpan = document.getElementById('demoTotalWins');
+const demoLossesSpan = document.getElementById('demoTotalLosses');
+const demoMaxDrawdownSpan = document.getElementById('demoMaxDrawdown');
+
+// Summary Toggle Button
+const toggleSummaryViewBtn = document.getElementById('toggleSummaryViewBtn');
 
 // Editing
 const editTradeModal = document.getElementById('editTradeModal');
@@ -78,7 +98,7 @@ const editTradeIdInput = document.getElementById('editTradeId');
 const editTradeDateInput = document.getElementById('editTradeDate');
 const editAccountTypeSelect = document.getElementById('editAccountType');
 const editPairSelect = document.getElementById('editPair');
-const editBiasSelect = document.getElementById('editBias');
+const editBiasValueInput = document.getElementById('editBiasValue'); // Custom
 const editSessionSelect = document.getElementById('editSession');
 const editDirectionSelect = document.getElementById('editDirection');
 const editTradeTypeSelect = document.getElementById('editTradeType');
@@ -89,15 +109,13 @@ const editRrrInput = document.getElementById('editRrr');
 const editDurationInput = document.getElementById('editDuration');
 const editPnlInput = document.getElementById('editPnl');
 const editResultSelect = document.getElementById('editResult');
-const editModelInput = document.getElementById('editModelInput'); // Changed from select
-const editEmotionalStateInput = document.getElementById('editEmotionalStateInput'); // Changed
+const editModelInput = document.getElementById('editModelInput');
+const editEmotionalStateInput = document.getElementById('editEmotionalStateInput');
 const editNoteInput = document.getElementById('editNote');
-
 const editEntryImg1Status = document.getElementById('editEntryImg1Status');
 const editEntryImg2Status = document.getElementById('editEntryImg2Status');
 const editExitImg1Status = document.getElementById('editExitImg1Status');
 const editExitImg2Status = document.getElementById('editExitImg2Status');
-
 
 // Calculator
 const calculatorViewBtn = document.getElementById('btnCalculatorView');
@@ -134,6 +152,46 @@ const sections = {
   calculator: calculatorSection,
 };
 
+// --- Custom Dropdown Functions ---
+function toggleDropdown(optionsId) {
+  const optionsDiv = document.getElementById(optionsId);
+  if (!optionsDiv) return;
+  // Hide any other open dropdowns first
+  document.querySelectorAll('.options:not(.hidden)').forEach(openDiv => {
+    if (openDiv.id !== optionsId) {
+      openDiv.classList.add('hidden');
+    }
+  });
+  optionsDiv.classList.toggle("hidden");
+}
+
+function selectOption(prefix, value, icon, text) {
+  const selectedOptionDiv = document.getElementById(`${prefix}SelectedOption`);
+  const hiddenInput = document.getElementById(`${prefix}Value`);
+  const optionsDiv = document.getElementById(`${prefix}Options`);
+
+  if (!selectedOptionDiv || !hiddenInput || !optionsDiv) return;
+
+  if (icon) {
+    selectedOptionDiv.innerHTML = `<span class="material-icons">${icon}</span> ${text} <span class="material-icons dropdown-arrow">arrow_drop_down</span>`;
+  } else {
+    selectedOptionDiv.innerHTML = `<span>${text}</span> <span class="material-icons dropdown-arrow">arrow_drop_down</span>`;
+  }
+  hiddenInput.value = value;
+  optionsDiv.classList.add("hidden");
+}
+
+// Close dropdown if clicked outside
+window.onclick = function (event) {
+  // Check if the click is outside ANY custom-select area
+  if (!event.target.closest('.custom-select')) {
+    document.querySelectorAll('.options:not(.hidden)').forEach(optionsDiv => {
+      optionsDiv.classList.add('hidden');
+    });
+  }
+}
+// --- End Custom Dropdown Functions ---
+
 function showSection(name) {
   Object.values(sections).forEach(sec => sec.classList.remove('active'));
   sections[name].classList.add('active');
@@ -147,7 +205,7 @@ function showSection(name) {
   });
   if (name === 'view') {
     populatePairFilters();
-    loadTrades(); // This will call updateStatistics
+    loadTrades();
   }
   if (name !== 'calculator') {
     riskAmountResultSpan.textContent = '--';
@@ -197,6 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme) root.setAttribute('data-theme', savedTheme);
   showSection('add');
+  // Ensure dropdowns are closed on load (though HTML/CSS should handle this)
+  document.querySelectorAll('.options').forEach(o => o.classList.add('hidden'));
 });
 
 document.getElementById('rrr').addEventListener('input', (e) => {
@@ -229,13 +289,13 @@ tradeForm.onsubmit = async (e) => {
   e.preventDefault();
 
   const tradeDate = document.getElementById('tradeDate').value;
-  const currentBias = biasSelect.value;
+  const currentBias = biasValueInput.value; // Using hidden input
   const currentSession = sessionSelect.value;
   const currentTradeType = tradeTypeSelect.value;
   const currentSlPips = slPipsInput.value;
   const currentRiskPercentage = riskPercentageInput.value;
-  const currentModel = modelInput.value.trim(); // From text input
-  const currentEmotionalState = emotionalStateInput.value.trim(); // From text input
+  const currentModel = modelInput.value.trim();
+  const currentEmotionalState = emotionalStateInput.value.trim();
 
   const accountType = accountTypeSelect.value;
   const pair = document.getElementById('pair').value;
@@ -243,8 +303,8 @@ tradeForm.onsubmit = async (e) => {
   const lotSize = lotSizeInput.value;
   const rrr = document.getElementById('rrr').value;
   const duration = durationInput.value;
-  const pnlInputEl = document.getElementById('pnl'); // Renamed to avoid conflict
-  const resultSelectEl = document.getElementById('result'); // Renamed
+  const pnlInputEl = document.getElementById('pnl');
+  const resultSelectEl = document.getElementById('result');
   const note = document.getElementById('note').value;
 
   const entryFile1 = entryImg1Input.files[0];
@@ -262,26 +322,13 @@ tradeForm.onsubmit = async (e) => {
   const exitImg2Base64 = await toBase64(exitFile2);
 
   const trade = {
-    date: tradeDate,
-    account: accountType,
-    pair: pair,
-    bias: currentBias,
-    session: currentSession,
-    direction: direction,
-    tradeType: currentTradeType,
-    lotSize: lotSize,
-    slPips: currentSlPips,
-    riskPercentage: currentRiskPercentage,
-    rrr: rrr,
-    duration: duration,
-    pnl: pnlValue,
-    result: resultSelectEl.value,
-    model: currentModel,
-    emotionalState: currentEmotionalState,
-    note: note,
+    date: tradeDate, account: accountType, pair: pair, bias: currentBias,
+    session: currentSession, direction: direction, tradeType: currentTradeType,
+    lotSize: lotSize, slPips: currentSlPips, riskPercentage: currentRiskPercentage,
+    rrr: rrr, duration: duration, pnl: pnlValue, result: resultSelectEl.value,
+    model: currentModel, emotionalState: currentEmotionalState, note: note,
     entryImg1: entryImg1Base64, entryImg2: entryImg2Base64,
-    exitImg1: exitImg1Base64, exitImg2: exitImg2Base64,
-    id: Date.now(),
+    exitImg1: exitImg1Base64, exitImg2: exitImg2Base64, id: Date.now(),
   };
 
   const trades = getTrades();
@@ -289,6 +336,7 @@ tradeForm.onsubmit = async (e) => {
   saveTrades(trades);
 
   tradeForm.reset();
+  selectOption('bias', '', '', '-- Select Bias --'); // Reset custom dropdown
   entry1UploadWrapper.querySelector('.text').textContent = 'Upload Image 1';
   entry2UploadWrapper.querySelector('.text').textContent = 'Upload Image 2';
   exit1UploadWrapper.querySelector('.text').textContent = 'Upload Image 1';
@@ -365,96 +413,94 @@ function filterTrades(trades) {
   });
 }
 
-toggleSummaryViewBtn.addEventListener('click', () => {
-  const isPropView = propFirmStatsDiv.style.display === 'block';
-  if (isPropView) {
-    propFirmStatsDiv.style.display = 'none';
-    generalStatsDiv.style.display = 'block';
-    toggleSummaryViewBtn.textContent = 'View Prop Stats';
-  } else {
-    propFirmStatsDiv.style.display = 'block';
-    generalStatsDiv.style.display = 'none';
-    toggleSummaryViewBtn.textContent = 'View General Stats';
-  }
-});
+// Summary View Cycling Logic
+let currentSummaryIndex = 0;
+const summaryViews = ['live', 'prop', 'backtest', 'demo'];
+const summaryDivs = {
+  'live': liveStatsDiv, 'prop': propFirmStatsDiv,
+  'backtest': backtestStatsDiv, 'demo': demoStatsDiv,
+};
+const summaryButtonText = {
+  'live': 'View Prop Stats', 'prop': 'View Backtest Stats',
+  'backtest': 'View Demo Stats', 'demo': 'View Live Stats',
+};
 
-
-function updateStatistics(trades) {
-  // General Statistics
-  const total = trades.length;
-  const wins = trades.filter(trade => trade.result === 'win').length;
-  const losses = trades.filter(trade => trade.result === 'lose').length;
-  const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
-  const totalPnL = trades.reduce((sum, trade) => sum + parseFloat(trade.pnl || 0), 0);
-
-  totalTradesSpan.textContent = total;
-  winRateSpan.textContent = `${winRate}%`;
-  totalWinsSpan.textContent = wins;
-  totalLossesSpan.textContent = losses;
-  totalPnLSpan.textContent = totalPnL.toFixed(2);
-  totalPnLSpan.className = totalPnL > 0 ? 'positive' : totalPnL < 0 ? 'negative' : 'zero';
-
-  let cumulativePnl = 0;
-  let peakPnl = 0;
-  let maxDd = 0;
-  trades.slice().sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(trade => {
-    cumulativePnl += parseFloat(trade.pnl || 0);
-    peakPnl = Math.max(peakPnl, cumulativePnl);
-    const currentDd = peakPnl - cumulativePnl;
-    if (currentDd > maxDd) maxDd = currentDd;
-  });
-  maxDrawdownSpan.textContent = maxDd.toFixed(2);
-
-  // Prop Firm Statistics
-  const propTrades = trades.filter(trade => trade.account === 'propfirm');
-  if (propTrades.length > 0) {
-    // Show button if there are prop trades, otherwise hide it
-    toggleSummaryViewBtn.style.display = 'inline-flex';
-
-    const propTotal = propTrades.length;
-    const propWins = propTrades.filter(trade => trade.result === 'win').length;
-    const propLosses = propTrades.filter(trade => trade.result === 'lose').length;
-    const propWinRateVal = propTotal > 0 ? ((propWins / propTotal) * 100).toFixed(1) : 0;
-    const propTotalPnLVal = propTrades.reduce((sum, trade) => sum + parseFloat(trade.pnl || 0), 0);
-    const propBaseBalance = 2500;
-    const propCurrentBalanceVal = propBaseBalance + propTotalPnLVal;
-
-    propTotalTradesSpan.textContent = propTotal;
-    propWinRateSpan.textContent = `${propWinRateVal}%`;
-    propTotalWinsSpan.textContent = propWins;
-    propTotalLossesSpan.textContent = propLosses;
-    propTotalPnLSpan.textContent = propTotalPnLVal.toFixed(2);
-    propTotalPnLSpan.className = propTotalPnLVal > 0 ? 'positive' : propTotalPnLVal < 0 ? 'negative' : 'zero';
-    propCurrentBalanceSpan.textContent = propCurrentBalanceVal.toFixed(2);
-
-    let propCumulativePnl = propBaseBalance;
-    let propPeakBalance = propBaseBalance;
-    let propMaxDd = 0;
-    propTrades.slice().sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(trade => {
-      propCumulativePnl += parseFloat(trade.pnl || 0);
-      propPeakBalance = Math.max(propPeakBalance, propCumulativePnl);
-      const currentDd = propPeakBalance - propCumulativePnl;
-      if (currentDd > propMaxDd) propMaxDd = currentDd;
-    });
-    propMaxDrawdownSpan.textContent = propMaxDd.toFixed(2);
-  } else {
-    // No prop trades, hide the button and prop stats section, ensure general is shown
-    toggleSummaryViewBtn.style.display = 'none';
-    propFirmStatsDiv.style.display = 'none';
-    generalStatsDiv.style.display = 'block';
-    toggleSummaryViewBtn.textContent = 'View Prop Stats'; // Reset button text
+function showSummaryView(view) {
+  Object.values(summaryDivs).forEach(div => div.style.display = 'none');
+  if (summaryDivs[view]) {
+    summaryDivs[view].style.display = 'block';
+    toggleSummaryViewBtn.textContent = summaryButtonText[view];
   }
 }
 
+toggleSummaryViewBtn.addEventListener('click', () => {
+  currentSummaryIndex = (currentSummaryIndex + 1) % summaryViews.length;
+  showSummaryView(summaryViews[currentSummaryIndex]);
+});
+
+function calculateDrawdown(trades, startBalance = 0) {
+  let cumulativePnl = startBalance;
+  let peak = startBalance;
+  let maxDd = 0;
+  trades.slice().sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(trade => {
+    cumulativePnl += parseFloat(trade.pnl || 0);
+    peak = Math.max(peak, cumulativePnl);
+    const currentDd = peak - cumulativePnl;
+    if (currentDd > maxDd) maxDd = currentDd;
+  });
+  return maxDd;
+}
+
+function updateSingleStatCategory(trades, spans, startBalance = 0) {
+  const total = trades.length;
+  const wins = trades.filter(t => t.result === 'win').length;
+  const losses = trades.filter(t => t.result === 'lose').length;
+  const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
+  const totalPnL = trades.reduce((sum, t) => sum + parseFloat(t.pnl || 0), 0);
+  const maxDd = calculateDrawdown(trades, startBalance);
+
+  spans.totalTrades.textContent = total;
+  spans.winRate.textContent = `${winRate}%`;
+  spans.wins.textContent = wins;
+  spans.losses.textContent = losses;
+  spans.totalPnL.textContent = totalPnL.toFixed(2);
+  spans.totalPnL.className = totalPnL > 0 ? 'positive' : totalPnL < 0 ? 'negative' : 'zero';
+  spans.maxDrawdown.textContent = maxDd.toFixed(2);
+
+  if (spans.currentBalance) {
+    spans.currentBalance.textContent = (startBalance + totalPnL).toFixed(2);
+  }
+  return total > 0;
+}
+
+function updateStatistics(trades) {
+  const liveTrades = trades.filter(t => t.account === 'live');
+  const propTrades = trades.filter(t => t.account === 'propfirm');
+  const backtestTrades = trades.filter(t => t.account === 'backtest');
+  const demoTrades = trades.filter(t => t.account === 'demo');
+
+  const liveSpans = { totalTrades: liveTotalTradesSpan, winRate: liveWinRateSpan, totalPnL: liveTotalPnLSpan, wins: liveWinsSpan, losses: liveLossesSpan, maxDrawdown: liveMaxDrawdownSpan };
+  const propSpans = { totalTrades: propTotalTradesSpan, winRate: propWinRateSpan, totalPnL: propTotalPnLSpan, wins: propTotalWinsSpan, losses: propTotalLossesSpan, maxDrawdown: propMaxDrawdownSpan, currentBalance: propCurrentBalanceSpan };
+  const backtestSpans = { totalTrades: backtestTotalTradesSpan, winRate: backtestWinRateSpan, totalPnL: backtestTotalPnLSpan, wins: backtestTotalWinsSpan, losses: backtestTotalLossesSpan, maxDrawdown: backtestMaxDrawdownSpan };
+  const demoSpans = { totalTrades: demoTotalTradesSpan, winRate: demoWinRateSpan, totalPnL: demoTotalPnLSpan, wins: demoWinsSpan, losses: demoLossesSpan, maxDrawdown: demoMaxDrawdownSpan };
+
+  updateSingleStatCategory(liveTrades, liveSpans);
+  updateSingleStatCategory(propTrades, propSpans, 2500);
+  updateSingleStatCategory(backtestTrades, backtestSpans);
+  updateSingleStatCategory(demoTrades, demoSpans);
+
+  toggleSummaryViewBtn.style.display = trades.length > 0 ? 'inline-flex' : 'none';
+  showSummaryView(summaryViews[currentSummaryIndex]);
+}
 
 function loadTrades() {
   tradeList.innerHTML = '';
   let trades = getTrades();
+  updateStatistics(trades);
   const filteredTrades = filterTrades(trades);
-  updateStatistics(filteredTrades);
 
   if (!filteredTrades.length) {
-    tradeList.innerHTML = '<p><span class="material-symbols-outlined icon">info</span> No trades found.</p>';
+    tradeList.innerHTML = '<p><span class="material-symbols-outlined icon">info</span> No trades found matching filters.</p>';
     return;
   }
   const sortedTrades = sortTrades(filteredTrades, sortOption.value);
@@ -466,40 +512,42 @@ function loadTrades() {
     let entryImagesHTML = '';
     if (t.entryImg1 || t.entryImg2) {
       entryImagesHTML += `<p class="image-group-header"><span class="material-symbols-outlined icon">photo_camera</span> Entry Images:</p><div class="images-grid">`;
-      if (t.entryImg1) entryImagesHTML += `<div class="image-container"><img src="${t.entryImg1}" alt="Entry 1 for ${t.pair}"></div>`;
-      if (t.entryImg2) entryImagesHTML += `<div class="image-container"><img src="${t.entryImg2}" alt="Entry 2 for ${t.pair}"></div>`;
+      if (t.entryImg1) entryImagesHTML += `<div class="image-container"><img src="${t.entryImg1}" alt="Entry 1"></div>`;
+      if (t.entryImg2) entryImagesHTML += `<div class="image-container"><img src="${t.entryImg2}" alt="Entry 2"></div>`;
       entryImagesHTML += `</div>`;
     }
 
     let exitImagesHTML = '';
     if (t.exitImg1 || t.exitImg2) {
       exitImagesHTML += `<p class="image-group-header"><span class="material-symbols-outlined icon">switch_camera</span> Exit Images:</p><div class="images-grid">`;
-      if (t.exitImg1) exitImagesHTML += `<div class="image-container"><img src="${t.exitImg1}" alt="Exit 1 for ${t.pair}"></div>`;
-      if (t.exitImg2) exitImagesHTML += `<div class="image-container"><img src="${t.exitImg2}" alt="Exit 2 for ${t.pair}"></div>`;
+      if (t.exitImg1) exitImagesHTML += `<div class="image-container"><img src="${t.exitImg1}" alt="Exit 1"></div>`;
+      if (t.exitImg2) exitImagesHTML += `<div class="image-container"><img src="${t.exitImg2}" alt="Exit 2"></div>`;
       exitImagesHTML += `</div>`;
     }
 
-    // For Bias icon display
-    let biasIcon = '';
-    if (t.bias === 'bullish') biasIcon = 'trending_up';
-    else if (t.bias === 'bearish') biasIcon = 'trending_down';
+    let biasIconHTML = '';
+    if (t.bias === 'bullish') {
+      biasIconHTML = `<p><span class="material-icons icon">trending_up</span> Bias: Bullish</p>`;
+    } else if (t.bias === 'bearish') {
+      biasIconHTML = `<p><span class="material-icons icon">trending_down</span> Bias: Bearish</p>`;
+    }
 
-    // For Session display (capitalize first letter)
     const sessionDisplay = t.session ? t.session.charAt(0).toUpperCase() + t.session.slice(1) : '';
     let sessionFlag = '';
     if (t.session === 'london') sessionFlag = '🇬🇧 ';
     else if (t.session === 'asia') sessionFlag = '🇯🇵 ';
     else if (t.session === 'ny') sessionFlag = '🇺🇸 ';
 
+    const accountDisplay = t.account ? t.account.charAt(0).toUpperCase() + t.account.slice(1) : 'N/A';
 
     card.innerHTML = `
-      <h3>${t.pair} (${t.account || 'N/A'})</h3>
+      <h3>${t.pair} (${accountDisplay})</h3>
       <div class="action-buttons">
          <button class="edit-btn" data-trade-id="${t.id}"><span class="material-symbols-outlined">edit</span></button>
          <button class="delete-btn" data-trade-id="${t.id}"><span class="material-symbols-outlined">delete</span></button>
       </div>
       <p><span class="material-symbols-outlined icon">calendar_month</span> ${t.date}</p>
-      ${t.bias && biasIcon ? `<p><span class="material-symbols-outlined icon">${biasIcon}</span> Bias: ${t.bias}</p>` : (t.bias ? `<p>Bias: ${t.bias}</p>` : '')}
+      ${biasIconHTML}
       ${t.session ? `<p><span class="material-symbols-outlined icon">schedule</span> Session: ${sessionFlag}${sessionDisplay}</p>` : ''}
       ${t.direction ? `<p><span class="material-symbols-outlined icon">compare_arrows</span> Direction: ${t.direction}</p>` : ''}
       ${t.tradeType ? `<p><span class="material-symbols-outlined icon">category</span> Type: ${t.tradeType}</p>` : ''}
@@ -526,18 +574,15 @@ function loadTrades() {
 
 function deleteTrade(event) {
   const tradeId = parseInt(event.target.closest('.action-buttons button').dataset.tradeId);
-  const confirmation = confirm("Are you sure you want to delete this trade?");
-  if (confirmation) {
-    let trades = getTrades();
-    trades = trades.filter(trade => trade.id !== tradeId);
-    saveTrades(trades);
+  if (confirm("Are you sure you want to delete this trade?")) {
+    saveTrades(getTrades().filter(trade => trade.id !== tradeId));
     loadTrades();
+    populatePairFilters();
   }
 }
 
 function sortTrades(trades, sortBy) {
-  const mutableTrades = [...trades];
-  return mutableTrades.sort((a, b) => {
+  return [...trades].sort((a, b) => {
     switch (sortBy) {
       case 'date-asc': return new Date(a.date) - new Date(b.date);
       case 'date-desc': return new Date(b.date) - new Date(a.date);
@@ -556,15 +601,12 @@ filterAccountSelect.addEventListener('change', loadTrades);
 sortOption.addEventListener('change', loadTrades);
 
 function openImageModal(event) {
-  const imgElement = event.target;
-  if (imgElement && imgElement.tagName === 'IMG') {
-    imageModal.style.display = 'flex'; imageModalImg.src = imgElement.src;
+  if (event.target.tagName === 'IMG') {
+    imageModal.style.display = 'flex'; imageModalImg.src = event.target.src;
   }
 }
 closeImageModal.onclick = () => { imageModal.style.display = 'none'; imageModalImg.src = ''; };
-imageModal.onclick = (event) => {
-  if (event.target === imageModal) { imageModal.style.display = 'none'; imageModalImg.src = ''; }
-};
+imageModal.onclick = (e) => { if (e.target === imageModal) closeImageModal.onclick(); };
 
 exportDataBtn.addEventListener('click', () => {
   const trades = getTrades();
@@ -586,15 +628,13 @@ importFileInput.addEventListener('change', (event) => {
   reader.onload = (e) => {
     try {
       const importedTrades = JSON.parse(e.target.result);
-      if (!Array.isArray(importedTrades)) { alert('Invalid file format.'); return; }
-      const confirmImport = confirm('Importing data will replace all existing trades. Are you sure?');
-      if (confirmImport) {
+      if (!Array.isArray(importedTrades)) throw new Error('Invalid format');
+      if (confirm('Importing data will replace all existing trades. Are you sure?')) {
         saveTrades(importedTrades); alert('Data imported successfully!');
-        settingsModal.style.display = 'none'; showSection('view');
+        settingsModal.style.display = 'none';
+        populatePairFilters(); showSection('view');
       } else { alert('Import cancelled.'); }
-    } catch (error) {
-      alert('Error parsing file.'); console.error('Error importing data:', error);
-    } finally { event.target.value = ''; }
+    } catch (error) { alert('Error parsing file.'); } finally { event.target.value = ''; }
   };
   reader.onerror = () => { alert('Error reading file.'); event.target.value = ''; };
   reader.readAsText(file);
@@ -602,15 +642,22 @@ importFileInput.addEventListener('change', (event) => {
 
 function openEditModal(event) {
   const tradeId = parseInt(event.target.closest('.action-buttons button').dataset.tradeId);
-  const trades = getTrades();
-  const tradeToEdit = trades.find(trade => trade.id === tradeId);
-  if (!tradeToEdit) { alert('Trade not found!'); return; }
+  const tradeToEdit = getTrades().find(trade => trade.id === tradeId);
+  if (!tradeToEdit) return;
 
   editTradeIdInput.value = tradeToEdit.id;
   editTradeDateInput.value = tradeToEdit.date;
-  editAccountTypeSelect.value = tradeToEdit.account || 'demo';
+  editAccountTypeSelect.value = tradeToEdit.account || 'live';
   editPairSelect.value = tradeToEdit.pair || '';
-  editBiasSelect.value = tradeToEdit.bias || '';
+
+  if (tradeToEdit.bias === 'bullish') {
+    selectOption('editBias', 'bullish', 'trending_up', 'Bullish');
+  } else if (tradeToEdit.bias === 'bearish') {
+    selectOption('editBias', 'bearish', 'trending_down', 'Bearish');
+  } else {
+    selectOption('editBias', '', '', '-- Select Bias --');
+  }
+
   editSessionSelect.value = tradeToEdit.session || '';
   editDirectionSelect.value = tradeToEdit.direction || '';
   editTradeTypeSelect.value = tradeToEdit.tradeType || '';
@@ -621,8 +668,8 @@ function openEditModal(event) {
   editDurationInput.value = tradeToEdit.duration || '';
   editPnlInput.value = tradeToEdit.pnl;
   editResultSelect.value = tradeToEdit.result || '';
-  editModelInput.value = tradeToEdit.model || ''; // For text input
-  editEmotionalStateInput.value = tradeToEdit.emotionalState || ''; // For text input
+  editModelInput.value = tradeToEdit.model || '';
+  editEmotionalStateInput.value = tradeToEdit.emotionalState || '';
   editNoteInput.value = tradeToEdit.note || '';
 
   editEntryImg1Status.textContent = tradeToEdit.entryImg1 ? 'Image 1 attached' : 'No image 1';
@@ -630,50 +677,41 @@ function openEditModal(event) {
   editExitImg1Status.textContent = tradeToEdit.exitImg1 ? 'Image 1 attached' : 'No image 1';
   editExitImg2Status.textContent = tradeToEdit.exitImg2 ? 'Image 2 attached' : 'No image 2';
   editTradeModal.style.display = 'flex';
+  document.getElementById('editBiasOptions').classList.add('hidden'); // Ensure edit dropdown is closed
+
 }
 
 closeEditModal.onclick = () => { editTradeModal.style.display = 'none'; editTradeForm.reset(); };
-editTradeModal.onclick = (event) => {
-  if (event.target === editTradeModal) { editTradeModal.style.display = 'none'; editTradeForm.reset(); }
-};
+editTradeModal.onclick = (e) => { if (e.target === editTradeModal) closeEditModal.onclick(); };
 
 editTradeForm.onsubmit = (e) => {
   e.preventDefault();
   const tradeId = parseInt(editTradeIdInput.value);
   const trades = getTrades();
   const tradeIndex = trades.findIndex(trade => trade.id === tradeId);
-  if (tradeIndex === -1) { alert('Error: Trade not found!'); return; }
+  if (tradeIndex === -1) return;
 
   let updatedPnl = parseFloat(editPnlInput.value || 0);
   const updatedResult = editResultSelect.value;
   if (updatedResult === 'lose' && updatedPnl > 0) updatedPnl = -updatedPnl;
   else if (updatedResult === 'breakeven') updatedPnl = 0;
 
-  const updatedTrade = {
+  trades[tradeIndex] = {
     ...trades[tradeIndex],
-    date: editTradeDateInput.value,
-    account: editAccountTypeSelect.value,
-    pair: editPairSelect.value,
-    bias: editBiasSelect.value,
-    session: editSessionSelect.value,
-    direction: editDirectionSelect.value,
-    tradeType: editTradeTypeSelect.value,
-    lotSize: editLotSizeInput.value,
-    slPips: editSlPipsInput.value,
-    riskPercentage: editRiskPercentageInput.value,
-    rrr: editRrrInput.value,
-    duration: editDurationInput.value,
-    pnl: updatedPnl,
-    result: updatedResult,
-    model: editModelInput.value.trim(),
-    emotionalState: editEmotionalStateInput.value.trim(),
-    note: editNoteInput.value,
+    date: editTradeDateInput.value, account: editAccountTypeSelect.value,
+    pair: editPairSelect.value, bias: editBiasValueInput.value,
+    session: editSessionSelect.value, direction: editDirectionSelect.value,
+    tradeType: editTradeTypeSelect.value, lotSize: editLotSizeInput.value,
+    slPips: editSlPipsInput.value, riskPercentage: editRiskPercentageInput.value,
+    rrr: editRrrInput.value, duration: editDurationInput.value,
+    pnl: updatedPnl, result: updatedResult, model: editModelInput.value.trim(),
+    emotionalState: editEmotionalStateInput.value.trim(), note: editNoteInput.value,
   };
-  trades[tradeIndex] = updatedTrade;
   saveTrades(trades);
   alert('Trade updated successfully!');
   editTradeModal.style.display = 'none';
   loadTrades();
+  populatePairFilters();
 };
 
 calculateBtn.addEventListener('click', () => {
@@ -684,32 +722,42 @@ calculateBtn.addEventListener('click', () => {
   const selectedCurrency = calcAccountCurrencySelect.value;
   const slUnit = calcSlUnitSelect.value;
 
-  if (isNaN(accountSize) || accountSize <= 0) { alert('Valid Account Size.'); return; }
-  if (isNaN(riskPercentage) || riskPercentage <= 0 || riskPercentage > 100) { alert('Valid Risk Percentage.'); return; }
-  if (isNaN(stopLossDistance) || stopLossDistance <= 0) { alert('Valid Stop Loss Distance.'); return; }
-  if (selectedPair === '') { alert('Select Trading Pair.'); return; }
-  if (selectedCurrency === '') { alert('Select Account Currency.'); return; }
+  if (isNaN(accountSize) || isNaN(riskPercentage) || isNaN(stopLossDistance) || !selectedPair || !selectedCurrency) {
+    alert('Please fill all calculator fields correctly.'); return;
+  }
 
   const pairData = instrumentValues[selectedPair];
   let valuePerUnit = null;
+
   if (pairData && pairData[selectedCurrency] !== undefined) {
     valuePerUnit = pairData[selectedCurrency];
+    if (slUnit === 'points' && (selectedPair === 'NAS100' || selectedPair === 'SPX' || selectedPair === 'XAU/USD' || selectedPair === 'DXY')) {
+      valuePerUnit /= 10;
+    }
   } else {
-    alert(`Value per ${slUnit} for ${selectedPair} in ${selectedCurrency} is not available.`);
+    alert(`Calculation data not available for ${selectedPair} in ${selectedCurrency}.`);
     riskAmountResultSpan.textContent = '--'; positionSizeResultSpan.textContent = '--'; return;
   }
-  if (valuePerUnit === null || stopLossDistance * valuePerUnit === 0) {
-    alert(`Cannot calculate: Value per ${slUnit} is zero or invalid.`);
-    riskAmountResultSpan.textContent = '--'; positionSizeResultSpan.textContent = '--'; return;
-  }
+
   const riskAmount = accountSize * (riskPercentage / 100);
-  const positionSize = riskAmount / (stopLossDistance * valuePerUnit);
+  const riskPerUnit = stopLossDistance * valuePerUnit;
+
+  if (riskPerUnit === 0) {
+    alert(`Cannot calculate: Risk per unit is zero.`);
+    riskAmountResultSpan.textContent = '--'; positionSizeResultSpan.textContent = '--'; return;
+  }
+
+  const positionSize = riskAmount / riskPerUnit;
   riskAmountResultSpan.textContent = `${selectedCurrency} ${riskAmount.toFixed(2)}`;
-  positionSizeResultSpan.textContent = positionSize.toFixed(3);
+
+  if (['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'EUR/GBP', 'EUR/JPY'].includes(selectedPair)) {
+    positionSizeResultSpan.textContent = `${(positionSize / 100000).toFixed(3)} Lots (${positionSize.toFixed(0)} Units)`;
+  } else {
+    positionSizeResultSpan.textContent = `${positionSize.toFixed(3)} Units`;
+  }
 });
 
-const calculatorInputs = calculatorSection.querySelectorAll('input, select');
-calculatorInputs.forEach(input => {
+calculatorSection.querySelectorAll('input, select').forEach(input => {
   input.addEventListener('input', () => {
     riskAmountResultSpan.textContent = '--';
     positionSizeResultSpan.textContent = '--';
