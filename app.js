@@ -763,3 +763,26 @@ calculatorSection.querySelectorAll('input, select').forEach(input => {
     positionSizeResultSpan.textContent = '--';
   });
 });
+const pipPairSelect = document.getElementById('pipPair');
+const entryPriceInput = document.getElementById('entryPrice');
+const exitPriceInput = document.getElementById('exitPrice');
+const pipResult = document.getElementById('pipResult');
+const calculatePipsBtn = document.getElementById('calculatePipsBtn');
+
+calculatePipsBtn.onclick = () => {
+  const entry = parseFloat(entryPriceInput.value);
+  const exit = parseFloat(exitPriceInput.value);
+  const type = pipPairSelect.value;
+
+  if (isNaN(entry) || isNaN(exit) || !type) {
+    pipResult.textContent = 'Please fill all fields';
+    return;
+  }
+
+  let factor = 10000; // default for Forex
+  if (type === 'gold') factor = 10;
+  if (type === 'indices') factor = 1;
+
+  const pips = Math.abs(exit - entry) * factor;
+  pipResult.textContent = pips.toFixed(1) + ' pips';
+};
